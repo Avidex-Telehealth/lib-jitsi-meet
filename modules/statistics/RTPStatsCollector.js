@@ -1,11 +1,11 @@
-import { browsers } from '@jitsi/js-utils';
-import { getLogger } from 'jitsi-meet-logger';
+import { browsers } from "../browser/";
+import { getLogger } from "jitsi-meet-logger";
 
-import * as MediaType from '../../service/RTC/MediaType';
-import * as StatisticsEvents from '../../service/statistics/Events';
-import browser from '../browser';
+import * as MediaType from "../../service/RTC/MediaType";
+import * as StatisticsEvents from "../../service/statistics/Events";
+import browser from "../browser";
 
-const GlobalOnErrorHandler = require('../util/GlobalOnErrorHandler');
+const GlobalOnErrorHandler = require("../util/GlobalOnErrorHandler");
 
 const logger = getLogger(__filename);
 
@@ -16,56 +16,52 @@ const logger = getLogger(__filename);
 const KEYS_BY_BROWSER_TYPE = {};
 
 KEYS_BY_BROWSER_TYPE[browsers.FIREFOX] = {
-    'ssrc': 'ssrc',
-    'packetsReceived': 'packetsReceived',
-    'packetsLost': 'packetsLost',
-    'packetsSent': 'packetsSent',
-    'bytesReceived': 'bytesReceived',
-    'bytesSent': 'bytesSent',
-    'framerateMean': 'framerateMean',
-    'ip': 'address',
-    'port': 'port',
-    'protocol': 'protocol'
+    ssrc: "ssrc",
+    packetsReceived: "packetsReceived",
+    packetsLost: "packetsLost",
+    packetsSent: "packetsSent",
+    bytesReceived: "bytesReceived",
+    bytesSent: "bytesSent",
+    framerateMean: "framerateMean",
+    ip: "address",
+    port: "port",
+    protocol: "protocol",
 };
 KEYS_BY_BROWSER_TYPE[browsers.CHROME] = {
-    'receiveBandwidth': 'googAvailableReceiveBandwidth',
-    'sendBandwidth': 'googAvailableSendBandwidth',
-    'remoteAddress': 'googRemoteAddress',
-    'transportType': 'googTransportType',
-    'localAddress': 'googLocalAddress',
-    'activeConnection': 'googActiveConnection',
-    'ssrc': 'ssrc',
-    'packetsReceived': 'packetsReceived',
-    'packetsSent': 'packetsSent',
-    'packetsLost': 'packetsLost',
-    'bytesReceived': 'bytesReceived',
-    'bytesSent': 'bytesSent',
-    'googCodecName': 'googCodecName',
-    'googFrameHeightReceived': 'googFrameHeightReceived',
-    'googFrameWidthReceived': 'googFrameWidthReceived',
-    'googFrameHeightSent': 'googFrameHeightSent',
-    'googFrameWidthSent': 'googFrameWidthSent',
-    'googFrameRateReceived': 'googFrameRateReceived',
-    'googFrameRateSent': 'googFrameRateSent',
-    'audioInputLevel': 'audioInputLevel',
-    'audioOutputLevel': 'audioOutputLevel',
-    'currentRoundTripTime': 'googRtt',
-    'remoteCandidateType': 'googRemoteCandidateType',
-    'localCandidateType': 'googLocalCandidateType',
-    'ip': 'ip',
-    'port': 'port',
-    'protocol': 'protocol'
+    receiveBandwidth: "googAvailableReceiveBandwidth",
+    sendBandwidth: "googAvailableSendBandwidth",
+    remoteAddress: "googRemoteAddress",
+    transportType: "googTransportType",
+    localAddress: "googLocalAddress",
+    activeConnection: "googActiveConnection",
+    ssrc: "ssrc",
+    packetsReceived: "packetsReceived",
+    packetsSent: "packetsSent",
+    packetsLost: "packetsLost",
+    bytesReceived: "bytesReceived",
+    bytesSent: "bytesSent",
+    googCodecName: "googCodecName",
+    googFrameHeightReceived: "googFrameHeightReceived",
+    googFrameWidthReceived: "googFrameWidthReceived",
+    googFrameHeightSent: "googFrameHeightSent",
+    googFrameWidthSent: "googFrameWidthSent",
+    googFrameRateReceived: "googFrameRateReceived",
+    googFrameRateSent: "googFrameRateSent",
+    audioInputLevel: "audioInputLevel",
+    audioOutputLevel: "audioOutputLevel",
+    currentRoundTripTime: "googRtt",
+    remoteCandidateType: "googRemoteCandidateType",
+    localCandidateType: "googLocalCandidateType",
+    ip: "ip",
+    port: "port",
+    protocol: "protocol",
 };
-KEYS_BY_BROWSER_TYPE[browsers.OPERA]
-    = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
-KEYS_BY_BROWSER_TYPE[browsers.NWJS]
-    = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
-KEYS_BY_BROWSER_TYPE[browsers.ELECTRON]
-    = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
-KEYS_BY_BROWSER_TYPE[browsers.SAFARI]
-    = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
-KEYS_BY_BROWSER_TYPE[browsers.REACT_NATIVE]
-    = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
+KEYS_BY_BROWSER_TYPE[browsers.OPERA] = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
+KEYS_BY_BROWSER_TYPE[browsers.NWJS] = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
+KEYS_BY_BROWSER_TYPE[browsers.ELECTRON] = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
+KEYS_BY_BROWSER_TYPE[browsers.SAFARI] = KEYS_BY_BROWSER_TYPE[browsers.CHROME];
+KEYS_BY_BROWSER_TYPE[browsers.REACT_NATIVE] =
+    KEYS_BY_BROWSER_TYPE[browsers.CHROME];
 
 /**
  * Calculates packet lost percent using the number of lost packets and the
@@ -75,8 +71,12 @@ KEYS_BY_BROWSER_TYPE[browsers.REACT_NATIVE]
  * @returns {number} packet loss percent
  */
 function calculatePacketLoss(lostPackets, totalPackets) {
-    if (!totalPackets || totalPackets <= 0
-            || !lostPackets || lostPackets <= 0) {
+    if (
+        !totalPackets ||
+        totalPackets <= 0 ||
+        !lostPackets ||
+        lostPackets <= 0
+    ) {
         return 0;
     }
 
@@ -91,18 +91,18 @@ function SsrcStats() {
     this.loss = {};
     this.bitrate = {
         download: 0,
-        upload: 0
+        upload: 0,
     };
     this.resolution = {};
     this.framerate = 0;
-    this.codec = '';
+    this.codec = "";
 }
 
 /**
  * Sets the "loss" object.
  * @param loss the value to set.
  */
-SsrcStats.prototype.setLoss = function(loss) {
+SsrcStats.prototype.setLoss = function (loss) {
     this.loss = loss || {};
 };
 
@@ -110,7 +110,7 @@ SsrcStats.prototype.setLoss = function(loss) {
  * Sets resolution that belong to the ssrc represented by this instance.
  * @param resolution new resolution value to be set.
  */
-SsrcStats.prototype.setResolution = function(resolution) {
+SsrcStats.prototype.setResolution = function (resolution) {
     this.resolution = resolution || {};
 };
 
@@ -119,7 +119,7 @@ SsrcStats.prototype.setResolution = function(resolution) {
  * the respective fields of the "bitrate" field of this object.
  * @param bitrate an object holding the values to add.
  */
-SsrcStats.prototype.addBitrate = function(bitrate) {
+SsrcStats.prototype.addBitrate = function (bitrate) {
     this.bitrate.download += bitrate.download;
     this.bitrate.upload += bitrate.upload;
 };
@@ -128,7 +128,7 @@ SsrcStats.prototype.addBitrate = function(bitrate) {
  * Resets the bit rate for given <tt>ssrc</tt> that belong to the peer
  * represented by this instance.
  */
-SsrcStats.prototype.resetBitrate = function() {
+SsrcStats.prototype.resetBitrate = function () {
     this.bitrate.download = 0;
     this.bitrate.upload = 0;
 };
@@ -137,19 +137,18 @@ SsrcStats.prototype.resetBitrate = function() {
  * Sets the "framerate".
  * @param framerate the value to set.
  */
-SsrcStats.prototype.setFramerate = function(framerate) {
+SsrcStats.prototype.setFramerate = function (framerate) {
     this.framerate = framerate || 0;
 };
 
-SsrcStats.prototype.setCodec = function(codec) {
-    this.codec = codec || '';
+SsrcStats.prototype.setCodec = function (codec) {
+    this.codec = codec || "";
 };
 
 /**
  *
  */
 function ConferenceStats() {
-
     /**
      * The bandwidth
      * @type {{}}
@@ -191,10 +190,11 @@ function ConferenceStats() {
  * @constructor
  */
 export default function StatsCollector(
-        peerconnection,
-        audioLevelsInterval,
-        statsInterval,
-        eventEmitter) {
+    peerconnection,
+    audioLevelsInterval,
+    statsInterval,
+    eventEmitter
+) {
     // StatsCollector depends entirely on the format of the reports returned by
     // RTCPeerConnection#getStats. Given that the value of
     // browser#getName() is very unlikely to change at runtime, it
@@ -222,8 +222,7 @@ export default function StatsCollector(
      * Whether to use the Promise-based getStats API or not.
      * @type {boolean}
      */
-    this._usesPromiseGetStats
-        = browser.isSafari() || browser.isFirefox();
+    this._usesPromiseGetStats = browser.isSafari() || browser.isFirefox();
 
     /**
      * The function which is to be used to retrieve the value associated in a
@@ -233,10 +232,9 @@ export default function StatsCollector(
      * @function
      * @private
      */
-    this._getStatValue
-        = this._usesPromiseGetStats
-            ? this._defineNewGetStatValueMethod(keys)
-            : this._defineGetStatValueMethod(keys);
+    this._getStatValue = this._usesPromiseGetStats
+        ? this._defineNewGetStatValueMethod(keys)
+        : this._defineGetStatValueMethod(keys);
 
     this.peerconnection = peerconnection;
     this.baselineAudioLevelsReport = null;
@@ -266,7 +264,7 @@ export default function StatsCollector(
 /**
  * Stops stats updates.
  */
-StatsCollector.prototype.stop = function() {
+StatsCollector.prototype.stop = function () {
     if (this.audioLevelsIntervalId) {
         clearInterval(this.audioLevelsIntervalId);
         this.audioLevelsIntervalId = null;
@@ -282,104 +280,106 @@ StatsCollector.prototype.stop = function() {
  * Callback passed to <tt>getStats</tt> method.
  * @param error an error that occurred on <tt>getStats</tt> call.
  */
-StatsCollector.prototype.errorCallback = function(error) {
+StatsCollector.prototype.errorCallback = function (error) {
     GlobalOnErrorHandler.callErrorHandler(error);
-    logger.error('Get stats error', error);
+    logger.error("Get stats error", error);
     this.stop();
 };
 
 /**
  * Starts stats updates.
  */
-StatsCollector.prototype.start = function(startAudioLevelStats) {
+StatsCollector.prototype.start = function (startAudioLevelStats) {
     if (startAudioLevelStats) {
         if (browser.supportsReceiverStats()) {
-            logger.info('Using RTCRtpSynchronizationSource for remote audio levels');
+            logger.info(
+                "Using RTCRtpSynchronizationSource for remote audio levels"
+            );
         }
-        this.audioLevelsIntervalId = setInterval(
-            () => {
-                if (browser.supportsReceiverStats()) {
-                    const audioLevels = this.peerconnection.getAudioLevels();
+        this.audioLevelsIntervalId = setInterval(() => {
+            if (browser.supportsReceiverStats()) {
+                const audioLevels = this.peerconnection.getAudioLevels();
 
-                    for (const ssrc in audioLevels) {
-                        if (audioLevels.hasOwnProperty(ssrc)) {
-                            // Use a scaling factor of 2.5 to report the same
-                            // audio levels that getStats reports.
-                            const audioLevel = audioLevels[ssrc] * 2.5;
+                for (const ssrc in audioLevels) {
+                    if (audioLevels.hasOwnProperty(ssrc)) {
+                        // Use a scaling factor of 2.5 to report the same
+                        // audio levels that getStats reports.
+                        const audioLevel = audioLevels[ssrc] * 2.5;
 
-                            this.eventEmitter.emit(
-                                StatisticsEvents.AUDIO_LEVEL,
-                                this.peerconnection,
-                                Number.parseInt(ssrc, 10),
-                                audioLevel,
-                                false /* isLocal */);
-                        }
+                        this.eventEmitter.emit(
+                            StatisticsEvents.AUDIO_LEVEL,
+                            this.peerconnection,
+                            Number.parseInt(ssrc, 10),
+                            audioLevel,
+                            false /* isLocal */
+                        );
                     }
-                } else {
-                    // Interval updates
-                    this.peerconnection.getStats(
-                        report => {
-                            let results = null;
-
-                            if (!report || !report.result
-                                || typeof report.result !== 'function') {
-                                results = report;
-                            } else {
-                                results = report.result();
-                            }
-                            this.currentAudioLevelsReport = results;
-                            if (this._usesPromiseGetStats) {
-                                this.processNewAudioLevelReport();
-                            } else {
-                                this.processAudioLevelReport();
-                            }
-
-                            this.baselineAudioLevelsReport
-                                = this.currentAudioLevelsReport;
-                        },
-                        error => this.errorCallback(error)
-                    );
                 }
-            },
-            this.audioLevelsIntervalMilis
-        );
+            } else {
+                // Interval updates
+                this.peerconnection.getStats(
+                    (report) => {
+                        let results = null;
+
+                        if (
+                            !report ||
+                            !report.result ||
+                            typeof report.result !== "function"
+                        ) {
+                            results = report;
+                        } else {
+                            results = report.result();
+                        }
+                        this.currentAudioLevelsReport = results;
+                        if (this._usesPromiseGetStats) {
+                            this.processNewAudioLevelReport();
+                        } else {
+                            this.processAudioLevelReport();
+                        }
+
+                        this.baselineAudioLevelsReport = this.currentAudioLevelsReport;
+                    },
+                    (error) => this.errorCallback(error)
+                );
+            }
+        }, this.audioLevelsIntervalMilis);
     }
 
-    this.statsIntervalId = setInterval(
-        () => {
-            // Interval updates
-            this.peerconnection.getStats(
-                report => {
-                    let results = null;
+    this.statsIntervalId = setInterval(() => {
+        // Interval updates
+        this.peerconnection.getStats(
+            (report) => {
+                let results = null;
 
-                    if (!report || !report.result
-                        || typeof report.result !== 'function') {
-                        // firefox
-                        results = report;
+                if (
+                    !report ||
+                    !report.result ||
+                    typeof report.result !== "function"
+                ) {
+                    // firefox
+                    results = report;
+                } else {
+                    // chrome
+                    results = report.result();
+                }
+
+                this.currentStatsReport = results;
+                try {
+                    if (this._usesPromiseGetStats) {
+                        this.processNewStatsReport();
                     } else {
-                        // chrome
-                        results = report.result();
+                        this.processStatsReport();
                     }
+                } catch (e) {
+                    GlobalOnErrorHandler.callErrorHandler(e);
+                    logger.error(`Unsupported key:${e}`, e);
+                }
 
-                    this.currentStatsReport = results;
-                    try {
-                        if (this._usesPromiseGetStats) {
-                            this.processNewStatsReport();
-                        } else {
-                            this.processStatsReport();
-                        }
-                    } catch (e) {
-                        GlobalOnErrorHandler.callErrorHandler(e);
-                        logger.error(`Unsupported key:${e}`, e);
-                    }
-
-                    this.previousStatsReport = this.currentStatsReport;
-                },
-                error => this.errorCallback(error)
-            );
-        },
-        this.statsIntervalMilis
-    );
+                this.previousStatsReport = this.currentStatsReport;
+            },
+            (error) => this.errorCallback(error)
+        );
+    }, this.statsIntervalMilis);
 };
 
 /**
@@ -390,11 +390,11 @@ StatsCollector.prototype.start = function(startAudioLevelStats) {
  * @param {Object.<string,string>} keys the map of LibJitsi browser-agnostic
  * names to RTCPeerConnection#getStats browser-specific keys
  */
-StatsCollector.prototype._defineGetStatValueMethod = function(keys) {
+StatsCollector.prototype._defineGetStatValueMethod = function (keys) {
     // Define the function which converts a lib-jitsi-meet browser-asnostic name
     // to a browser-specific key of a report returned by
     // RTCPeerConnection#getStats.
-    const keyFromName = function(name) {
+    const keyFromName = function (name) {
         const key = keys[name];
 
         if (key) {
@@ -411,42 +411,41 @@ StatsCollector.prototype._defineGetStatValueMethod = function(keys) {
     let itemStatByKey;
 
     switch (this._browserType) {
-    case browsers.CHROME:
-    case browsers.OPERA:
-    case browsers.NWJS:
-    case browsers.ELECTRON:
-        // TODO What about other types of browser which are based on Chrome such
-        // as NW.js? Every time we want to support a new type browser we have to
-        // go and add more conditions (here and in multiple other places).
-        // Cannot we do a feature detection instead of a browser type check? For
-        // example, if item has a stat property of type function, then it's very
-        // likely that whoever defined it wanted you to call it in order to
-        // retrieve the value associated with a specific key.
-        itemStatByKey = (item, key) => item.stat(key);
-        break;
-    case browsers.REACT_NATIVE:
-        // The implementation provided by react-native-webrtc follows the
-        // Objective-C WebRTC API: RTCStatsReport has a values property of type
-        // Array in which each element is a key-value pair.
-        itemStatByKey = function(item, key) {
-            let value;
+        case browsers.CHROME:
+        case browsers.OPERA:
+        case browsers.NWJS:
+        case browsers.ELECTRON:
+            // TODO What about other types of browser which are based on Chrome such
+            // as NW.js? Every time we want to support a new type browser we have to
+            // go and add more conditions (here and in multiple other places).
+            // Cannot we do a feature detection instead of a browser type check? For
+            // example, if item has a stat property of type function, then it's very
+            // likely that whoever defined it wanted you to call it in order to
+            // retrieve the value associated with a specific key.
+            itemStatByKey = (item, key) => item.stat(key);
+            break;
+        case browsers.REACT_NATIVE:
+            // The implementation provided by react-native-webrtc follows the
+            // Objective-C WebRTC API: RTCStatsReport has a values property of type
+            // Array in which each element is a key-value pair.
+            itemStatByKey = function (item, key) {
+                let value;
 
-            item.values.some(pair => {
-                if (pair.hasOwnProperty(key)) {
-                    value = pair[key];
+                item.values.some((pair) => {
+                    if (pair.hasOwnProperty(key)) {
+                        value = pair[key];
 
-                    return true;
-                }
+                        return true;
+                    }
 
-                return false;
+                    return false;
+                });
 
-            });
-
-            return value;
-        };
-        break;
-    default:
-        itemStatByKey = (item, key) => item[key];
+                return value;
+            };
+            break;
+        default:
+            itemStatByKey = (item, key) => item[key];
     }
 
     // Compose the 2 functions defined above to get a function which retrieves
@@ -463,10 +462,10 @@ StatsCollector.prototype._defineGetStatValueMethod = function(keys) {
  * @return {number}
  * @private
  */
-StatsCollector.prototype.getNonNegativeStat = function(report, name) {
+StatsCollector.prototype.getNonNegativeStat = function (report, name) {
     let value = this._getStatValue(report, name);
 
-    if (typeof value !== 'number') {
+    if (typeof value !== "number") {
         value = Number(value);
     }
 
@@ -482,7 +481,7 @@ StatsCollector.prototype.getNonNegativeStat = function(report, name) {
 /**
  * Stats processing logic.
  */
-StatsCollector.prototype.processStatsReport = function() {
+StatsCollector.prototype.processStatsReport = function () {
     if (!this.previousStatsReport) {
         return;
     }
@@ -502,46 +501,56 @@ StatsCollector.prototype.processStatsReport = function() {
         }
 
         try {
-            const receiveBandwidth = getStatValue(now, 'receiveBandwidth');
-            const sendBandwidth = getStatValue(now, 'sendBandwidth');
+            const receiveBandwidth = getStatValue(now, "receiveBandwidth");
+            const sendBandwidth = getStatValue(now, "sendBandwidth");
 
             if (receiveBandwidth || sendBandwidth) {
                 this.conferenceStats.bandwidth = {
-                    'download': Math.round(receiveBandwidth / 1000),
-                    'upload': Math.round(sendBandwidth / 1000)
+                    download: Math.round(receiveBandwidth / 1000),
+                    upload: Math.round(sendBandwidth / 1000),
                 };
             }
-        } catch (e) { /* not supported*/ }
+        } catch (e) {
+            /* not supported*/
+        }
 
-        if (now.type === 'googCandidatePair') {
-            let active, ip, localCandidateType, localip,
-                remoteCandidateType, rtt, type;
+        if (now.type === "googCandidatePair") {
+            let active,
+                ip,
+                localCandidateType,
+                localip,
+                remoteCandidateType,
+                rtt,
+                type;
 
             try {
-                active = getStatValue(now, 'activeConnection');
+                active = getStatValue(now, "activeConnection");
                 if (!active) {
                     continue;
                 }
 
-                ip = getStatValue(now, 'remoteAddress');
-                type = getStatValue(now, 'transportType');
-                localip = getStatValue(now, 'localAddress');
-                localCandidateType = getStatValue(now, 'localCandidateType');
-                remoteCandidateType = getStatValue(now, 'remoteCandidateType');
-                rtt = this.getNonNegativeStat(now, 'currentRoundTripTime');
-            } catch (e) { /* not supported*/ }
-            if (!ip || !type || !localip || active !== 'true') {
+                ip = getStatValue(now, "remoteAddress");
+                type = getStatValue(now, "transportType");
+                localip = getStatValue(now, "localAddress");
+                localCandidateType = getStatValue(now, "localCandidateType");
+                remoteCandidateType = getStatValue(now, "remoteCandidateType");
+                rtt = this.getNonNegativeStat(now, "currentRoundTripTime");
+            } catch (e) {
+                /* not supported*/
+            }
+            if (!ip || !type || !localip || active !== "true") {
                 continue;
             }
 
             // Save the address unless it has been saved already.
             const conferenceStatsTransport = this.conferenceStats.transport;
 
-            if (!conferenceStatsTransport.some(
-                    t =>
-                        t.ip === ip
-                            && t.type === type
-                            && t.localip === localip)) {
+            if (
+                !conferenceStatsTransport.some(
+                    (t) =>
+                        t.ip === ip && t.type === type && t.localip === localip
+                )
+            ) {
                 conferenceStatsTransport.push({
                     ip,
                     type,
@@ -549,15 +558,15 @@ StatsCollector.prototype.processStatsReport = function() {
                     p2p: this.peerconnection.isP2P,
                     localCandidateType,
                     remoteCandidateType,
-                    rtt
+                    rtt,
                 });
             }
             continue;
         }
 
-        if (now.type === 'candidatepair') {
+        if (now.type === "candidatepair") {
             // we need succeeded and selected pairs only
-            if (now.state !== 'succeeded' || !now.selected) {
+            if (now.state !== "succeeded" || !now.selected) {
                 continue;
             }
 
@@ -570,20 +579,24 @@ StatsCollector.prototype.processStatsReport = function() {
                 localip: `${local.ipAddress}:${local.portNumber}`,
                 p2p: this.peerconnection.isP2P,
                 localCandidateType: local.candidateType,
-                remoteCandidateType: remote.candidateType
+                remoteCandidateType: remote.candidateType,
             });
         }
 
-        if (now.type !== 'ssrc' && now.type !== 'outboundrtp'
-            && now.type !== 'inboundrtp' && now.type !== 'track') {
+        if (
+            now.type !== "ssrc" &&
+            now.type !== "outboundrtp" &&
+            now.type !== "inboundrtp" &&
+            now.type !== "track"
+        ) {
             continue;
         }
 
         const before = this.previousStatsReport[idx];
-        let ssrc = this.getNonNegativeStat(now, 'ssrc');
+        let ssrc = this.getNonNegativeStat(now, "ssrc");
 
         // If type="track", take the first SSRC from ssrcIds.
-        if (now.type === 'track' && Array.isArray(now.ssrcIds)) {
+        if (now.type === "track" && Array.isArray(now.ssrcIds)) {
             ssrc = Number(now.ssrcIds[0]);
         }
 
@@ -612,16 +625,19 @@ StatsCollector.prototype.processStatsReport = function() {
         }
 
         let isDownloadStream = true;
-        let key = 'packetsReceived';
+        let key = "packetsReceived";
         let packetsNow = getStatValue(now, key);
 
-        if (typeof packetsNow === 'undefined'
-            || packetsNow === null || packetsNow === '') {
+        if (
+            typeof packetsNow === "undefined" ||
+            packetsNow === null ||
+            packetsNow === ""
+        ) {
             isDownloadStream = false;
-            key = 'packetsSent';
+            key = "packetsSent";
             packetsNow = getStatValue(now, key);
-            if (typeof packetsNow === 'undefined' || packetsNow === null) {
-                logger.warn('No packetsReceived nor packetsSent stat found');
+            if (typeof packetsNow === "undefined" || packetsNow === null) {
+                logger.warn("No packetsReceived nor packetsSent stat found");
             }
         }
         if (!packetsNow || packetsNow < 0) {
@@ -631,45 +647,52 @@ StatsCollector.prototype.processStatsReport = function() {
         const packetsBefore = this.getNonNegativeStat(before, key);
         const packetsDiff = Math.max(0, packetsNow - packetsBefore);
 
-        const packetsLostNow
-            = this.getNonNegativeStat(now, 'packetsLost');
-        const packetsLostBefore
-            = this.getNonNegativeStat(before, 'packetsLost');
+        const packetsLostNow = this.getNonNegativeStat(now, "packetsLost");
+        const packetsLostBefore = this.getNonNegativeStat(
+            before,
+            "packetsLost"
+        );
         const packetsLostDiff = Math.max(0, packetsLostNow - packetsLostBefore);
 
         ssrcStats.setLoss({
             packetsTotal: packetsDiff + packetsLostDiff,
             packetsLost: packetsLostDiff,
-            isDownloadStream
+            isDownloadStream,
         });
 
-        const bytesReceivedNow
-            = this.getNonNegativeStat(now, 'bytesReceived');
-        const bytesReceivedBefore
-            = this.getNonNegativeStat(before, 'bytesReceived');
-        const bytesReceived
-            = Math.max(0, bytesReceivedNow - bytesReceivedBefore);
+        const bytesReceivedNow = this.getNonNegativeStat(now, "bytesReceived");
+        const bytesReceivedBefore = this.getNonNegativeStat(
+            before,
+            "bytesReceived"
+        );
+        const bytesReceived = Math.max(
+            0,
+            bytesReceivedNow - bytesReceivedBefore
+        );
 
         let bytesSent = 0;
 
         // TODO: clean this mess up!
-        let nowBytesTransmitted = getStatValue(now, 'bytesSent');
+        let nowBytesTransmitted = getStatValue(now, "bytesSent");
 
-        if (typeof nowBytesTransmitted === 'number'
-            || typeof nowBytesTransmitted === 'string') {
+        if (
+            typeof nowBytesTransmitted === "number" ||
+            typeof nowBytesTransmitted === "string"
+        ) {
             nowBytesTransmitted = Number(nowBytesTransmitted);
             if (!isNaN(nowBytesTransmitted)) {
                 byteSentStats[ssrc] = nowBytesTransmitted;
                 if (nowBytesTransmitted > 0) {
-                    bytesSent = nowBytesTransmitted
-                        - getStatValue(before, 'bytesSent');
+                    bytesSent =
+                        nowBytesTransmitted - getStatValue(before, "bytesSent");
                 }
             }
         }
         bytesSent = Math.max(0, bytesSent);
 
         const timeMs = now.timestamp - before.timestamp;
-        let bitrateReceivedKbps = 0, bitrateSentKbps = 0;
+        let bitrateReceivedKbps = 0,
+            bitrateSentKbps = 0;
 
         if (timeMs > 0) {
             // TODO is there any reason to round here?
@@ -678,41 +701,51 @@ StatsCollector.prototype.processStatsReport = function() {
         }
 
         ssrcStats.addBitrate({
-            'download': bitrateReceivedKbps,
-            'upload': bitrateSentKbps
+            download: bitrateReceivedKbps,
+            upload: bitrateSentKbps,
         });
 
         const resolution = {
             height: null,
-            width: null
+            width: null,
         };
 
         try {
             let height, width;
 
-            if ((height = getStatValue(now, 'googFrameHeightReceived'))
-                && (width = getStatValue(now, 'googFrameWidthReceived'))) {
+            if (
+                (height = getStatValue(now, "googFrameHeightReceived")) &&
+                (width = getStatValue(now, "googFrameWidthReceived"))
+            ) {
                 resolution.height = height;
                 resolution.width = width;
-            } else if ((height = getStatValue(now, 'googFrameHeightSent'))
-                && (width = getStatValue(now, 'googFrameWidthSent'))) {
+            } else if (
+                (height = getStatValue(now, "googFrameHeightSent")) &&
+                (width = getStatValue(now, "googFrameWidthSent"))
+            ) {
                 resolution.height = height;
                 resolution.width = width;
             }
-        } catch (e) { /* not supported*/ }
+        } catch (e) {
+            /* not supported*/
+        }
 
         // Tries to get frame rate
         let frameRate;
 
         try {
-            frameRate = getStatValue(now, 'googFrameRateReceived')
-                || getStatValue(now, 'googFrameRateSent') || 0;
+            frameRate =
+                getStatValue(now, "googFrameRateReceived") ||
+                getStatValue(now, "googFrameRateSent") ||
+                0;
         } catch (e) {
             // if it fails with previous properties(chrome),
             // let's try with another one (FF)
             try {
-                frameRate = this.getNonNegativeStat(now, 'framerateMean');
-            } catch (err) { /* not supported*/ }
+                frameRate = this.getNonNegativeStat(now, "framerateMean");
+            } catch (err) {
+                /* not supported*/
+            }
         }
         ssrcStats.setFramerate(Math.round(frameRate || 0));
 
@@ -726,15 +759,19 @@ StatsCollector.prototype.processStatsReport = function() {
 
         // Try to get the codec for later reporting.
         try {
-            codec = getStatValue(now, 'googCodecName') || '';
-        } catch (e) { /* not supported*/ }
+            codec = getStatValue(now, "googCodecName") || "";
+        } catch (e) {
+            /* not supported*/
+        }
 
         ssrcStats.setCodec(codec);
     }
 
-
     this.eventEmitter.emit(
-        StatisticsEvents.BYTE_SENT_STATS, this.peerconnection, byteSentStats);
+        StatisticsEvents.BYTE_SENT_STATS,
+        this.peerconnection,
+        byteSentStats
+    );
 
     this._processAndEmitReport();
 };
@@ -742,15 +779,15 @@ StatsCollector.prototype.processStatsReport = function() {
 /**
  *
  */
-StatsCollector.prototype._processAndEmitReport = function() {
+StatsCollector.prototype._processAndEmitReport = function () {
     // process stats
     const totalPackets = {
         download: 0,
-        upload: 0
+        upload: 0,
     };
     const lostPackets = {
         download: 0,
-        upload: 0
+        upload: 0,
     };
     let bitrateDownload = 0;
     let bitrateUpload = 0;
@@ -759,15 +796,15 @@ StatsCollector.prototype._processAndEmitReport = function() {
     const codecs = {};
     let audioBitrateDownload = 0;
     let audioBitrateUpload = 0;
-    let audioCodec = '';
+    let audioCodec = "";
     let videoBitrateDownload = 0;
     let videoBitrateUpload = 0;
-    let videoCodec = '';
+    let videoCodec = "";
 
-    for (const [ ssrc, ssrcStats ] of this.ssrc2stats) {
+    for (const [ssrc, ssrcStats] of this.ssrc2stats) {
         // process packet loss stats
         const loss = ssrcStats.loss;
-        const type = loss.isDownloadStream ? 'download' : 'upload';
+        const type = loss.isDownloadStream ? "download" : "upload";
 
         totalPackets[type] += loss.packetsTotal;
         lostPackets[type] += loss.packetsLost;
@@ -795,10 +832,12 @@ StatsCollector.prototype._processAndEmitReport = function() {
             if (participantId) {
                 const resolution = ssrcStats.resolution;
 
-                if (resolution.width
-                        && resolution.height
-                        && resolution.width !== -1
-                        && resolution.height !== -1) {
+                if (
+                    resolution.width &&
+                    resolution.height &&
+                    resolution.width !== -1 &&
+                    resolution.height !== -1
+                ) {
                     const userResolutions = resolutions[participantId] || {};
 
                     userResolutions[ssrc] = resolution;
@@ -812,8 +851,8 @@ StatsCollector.prototype._processAndEmitReport = function() {
                 }
                 if (audioCodec.length && videoCodec.length) {
                     const codecDesc = {
-                        'audio': audioCodec,
-                        'video': videoCodec
+                        audio: audioCodec,
+                        video: videoCodec,
                     };
 
                     const userCodecs = codecs[participantId] || {};
@@ -830,37 +869,40 @@ StatsCollector.prototype._processAndEmitReport = function() {
     }
 
     this.conferenceStats.bitrate = {
-        'upload': bitrateUpload,
-        'download': bitrateDownload
+        upload: bitrateUpload,
+        download: bitrateDownload,
     };
 
     this.conferenceStats.bitrate.audio = {
-        'upload': audioBitrateUpload,
-        'download': audioBitrateDownload
+        upload: audioBitrateUpload,
+        download: audioBitrateDownload,
     };
 
     this.conferenceStats.bitrate.video = {
-        'upload': videoBitrateUpload,
-        'download': videoBitrateDownload
+        upload: videoBitrateUpload,
+        download: videoBitrateDownload,
     };
 
     this.conferenceStats.packetLoss = {
-        total:
-            calculatePacketLoss(
-                lostPackets.download + lostPackets.upload,
-                totalPackets.download + totalPackets.upload),
-        download:
-            calculatePacketLoss(lostPackets.download, totalPackets.download),
-        upload:
-            calculatePacketLoss(lostPackets.upload, totalPackets.upload)
+        total: calculatePacketLoss(
+            lostPackets.download + lostPackets.upload,
+            totalPackets.download + totalPackets.upload
+        ),
+        download: calculatePacketLoss(
+            lostPackets.download,
+            totalPackets.download
+        ),
+        upload: calculatePacketLoss(lostPackets.upload, totalPackets.upload),
     };
 
     const avgAudioLevels = {};
     let localAvgAudioLevels;
 
-    Object.keys(this.audioLevelReportHistory).forEach(ssrc => {
+    Object.keys(this.audioLevelReportHistory).forEach((ssrc) => {
         const { data, isLocal } = this.audioLevelReportHistory[ssrc];
-        const avgAudioLevel = data.reduce((sum, currentValue) => sum + currentValue) / data.length;
+        const avgAudioLevel =
+            data.reduce((sum, currentValue) => sum + currentValue) /
+            data.length;
 
         if (isLocal) {
             localAvgAudioLevels = avgAudioLevel;
@@ -882,23 +924,24 @@ StatsCollector.prototype._processAndEmitReport = function() {
         StatisticsEvents.CONNECTION_STATS,
         this.peerconnection,
         {
-            'bandwidth': this.conferenceStats.bandwidth,
-            'bitrate': this.conferenceStats.bitrate,
-            'packetLoss': this.conferenceStats.packetLoss,
-            'resolution': resolutions,
-            'framerate': framerates,
-            'codec': codecs,
-            'transport': this.conferenceStats.transport,
+            bandwidth: this.conferenceStats.bandwidth,
+            bitrate: this.conferenceStats.bitrate,
+            packetLoss: this.conferenceStats.packetLoss,
+            resolution: resolutions,
+            framerate: framerates,
+            codec: codecs,
+            transport: this.conferenceStats.transport,
             localAvgAudioLevels,
-            avgAudioLevels
-        });
+            avgAudioLevels,
+        }
+    );
     this.conferenceStats.transport = [];
 };
 
 /**
  * Stats processing logic.
  */
-StatsCollector.prototype.processAudioLevelReport = function() {
+StatsCollector.prototype.processAudioLevelReport = function () {
     if (!this.baselineAudioLevelsReport) {
         return;
     }
@@ -912,12 +955,12 @@ StatsCollector.prototype.processAudioLevelReport = function() {
 
         const now = this.currentAudioLevelsReport[idx];
 
-        if (now.type !== 'ssrc' && now.type !== 'track') {
+        if (now.type !== "ssrc" && now.type !== "track") {
             continue;
         }
 
         const before = this.baselineAudioLevelsReport[idx];
-        let ssrc = this.getNonNegativeStat(now, 'ssrc');
+        let ssrc = this.getNonNegativeStat(now, "ssrc");
 
         if (!ssrc && Array.isArray(now.ssrcIds)) {
             ssrc = Number(now.ssrcIds[0]);
@@ -929,8 +972,8 @@ StatsCollector.prototype.processAudioLevelReport = function() {
         }
 
         if (!ssrc) {
-            if ((Date.now() - now.timestamp) < 3000) {
-                logger.warn('No ssrc: ');
+            if (Date.now() - now.timestamp < 3000) {
+                logger.warn("No ssrc: ");
             }
             continue;
         }
@@ -939,11 +982,12 @@ StatsCollector.prototype.processAudioLevelReport = function() {
         let audioLevel;
 
         try {
-            audioLevel
-                = getStatValue(now, 'audioInputLevel')
-                    || getStatValue(now, 'audioOutputLevel');
-        } catch (e) { /* not supported*/
-            logger.warn('Audio Levels are not available in the statistics.');
+            audioLevel =
+                getStatValue(now, "audioInputLevel") ||
+                getStatValue(now, "audioOutputLevel");
+        } catch (e) {
+            /* not supported*/
+            logger.warn("Audio Levels are not available in the statistics.");
             clearInterval(this.audioLevelsIntervalId);
 
             return;
@@ -953,10 +997,10 @@ StatsCollector.prototype.processAudioLevelReport = function() {
             let isLocal;
 
             // If type="ssrc" (legacy) check whether they are received packets.
-            if (now.type === 'ssrc') {
-                isLocal = !getStatValue(now, 'packetsReceived');
+            if (now.type === "ssrc") {
+                isLocal = !getStatValue(now, "packetsReceived");
 
-            // If type="track", check remoteSource boolean property.
+                // If type="track", check remoteSource boolean property.
             } else {
                 isLocal = !now.remoteSource;
             }
@@ -971,7 +1015,7 @@ StatsCollector.prototype.processAudioLevelReport = function() {
             if (!(ssrc in this.audioLevelReportHistory)) {
                 this.audioLevelReportHistory[ssrc] = {
                     isLocal,
-                    data: []
+                    data: [],
                 };
             }
             this.audioLevelReportHistory[ssrc].data.push(audioLevel);
@@ -981,7 +1025,8 @@ StatsCollector.prototype.processAudioLevelReport = function() {
                 this.peerconnection,
                 ssrc,
                 audioLevel,
-                isLocal);
+                isLocal
+            );
         }
     }
 };
@@ -1005,11 +1050,11 @@ StatsCollector.prototype.processAudioLevelReport = function() {
  * @param {Object.<string,string>} keys the map of LibJitsi browser-agnostic
  * names to RTCPeerConnection#getStats browser-specific keys
  */
-StatsCollector.prototype._defineNewGetStatValueMethod = function(keys) {
+StatsCollector.prototype._defineNewGetStatValueMethod = function (keys) {
     // Define the function which converts a lib-jitsi-meet browser-asnostic name
     // to a browser-specific key of a report returned by
     // RTCPeerConnection#getStats.
-    const keyFromName = function(name) {
+    const keyFromName = function (name) {
         const key = keys[name];
 
         if (key) {
@@ -1033,10 +1078,10 @@ StatsCollector.prototype._defineNewGetStatValueMethod = function(keys) {
  * @return {number}
  * @private
  */
-StatsCollector.prototype.getNonNegativeValue = function(v) {
+StatsCollector.prototype.getNonNegativeValue = function (v) {
     let value = v;
 
-    if (typeof value !== 'number') {
+    if (typeof value !== "number") {
         value = Number(value);
     }
 
@@ -1057,7 +1102,7 @@ StatsCollector.prototype.getNonNegativeValue = function(v) {
  * @return {number} the calculated bitrate between now and before.
  * @private
  */
-StatsCollector.prototype._calculateBitrate = function(now, before, fieldName) {
+StatsCollector.prototype._calculateBitrate = function (now, before, fieldName) {
     const bytesNow = this.getNonNegativeValue(now[fieldName]);
     const bytesBefore = this.getNonNegativeValue(before[fieldName]);
     const bytesProcessed = Math.max(0, bytesNow - bytesBefore);
@@ -1076,7 +1121,7 @@ StatsCollector.prototype._calculateBitrate = function(now, before, fieldName) {
 /**
  * Stats processing new getStats logic.
  */
-StatsCollector.prototype.processNewStatsReport = function() {
+StatsCollector.prototype.processNewStatsReport = function () {
     if (!this.previousStatsReport) {
         return;
     }
@@ -1084,51 +1129,56 @@ StatsCollector.prototype.processNewStatsReport = function() {
     const getStatValue = this._getStatValue;
     const byteSentStats = {};
 
-    this.currentStatsReport.forEach(now => {
-
+    this.currentStatsReport.forEach((now) => {
         // RTCIceCandidatePairStats
         // https://w3c.github.io/webrtc-stats/#candidatepair-dict*
-        if (now.type === 'candidate-pair'
-            && now.nominated
-            && now.state === 'succeeded') {
-
+        if (
+            now.type === "candidate-pair" &&
+            now.nominated &&
+            now.state === "succeeded"
+        ) {
             const availableIncomingBitrate = now.availableIncomingBitrate;
             const availableOutgoingBitrate = now.availableOutgoingBitrate;
 
             if (availableIncomingBitrate || availableOutgoingBitrate) {
                 this.conferenceStats.bandwidth = {
-                    'download': Math.round(availableIncomingBitrate / 1000),
-                    'upload': Math.round(availableOutgoingBitrate / 1000)
+                    download: Math.round(availableIncomingBitrate / 1000),
+                    upload: Math.round(availableOutgoingBitrate / 1000),
                 };
             }
 
-            const remoteUsedCandidate
-                = this.currentStatsReport.get(now.remoteCandidateId);
-            const localUsedCandidate
-                = this.currentStatsReport.get(now.localCandidateId);
+            const remoteUsedCandidate = this.currentStatsReport.get(
+                now.remoteCandidateId
+            );
+            const localUsedCandidate = this.currentStatsReport.get(
+                now.localCandidateId
+            );
 
             // RTCIceCandidateStats
             // https://w3c.github.io/webrtc-stats/#icecandidate-dict*
             // safari currently does not provide ice candidates in stats
             if (remoteUsedCandidate && localUsedCandidate) {
-                const remoteIpAddress = getStatValue(remoteUsedCandidate, 'ip');
-                const remotePort = getStatValue(remoteUsedCandidate, 'port');
+                const remoteIpAddress = getStatValue(remoteUsedCandidate, "ip");
+                const remotePort = getStatValue(remoteUsedCandidate, "port");
                 const ip = `${remoteIpAddress}:${remotePort}`;
 
-                const localIpAddress = getStatValue(localUsedCandidate, 'ip');
-                const localPort = getStatValue(localUsedCandidate, 'port');
+                const localIpAddress = getStatValue(localUsedCandidate, "ip");
+                const localPort = getStatValue(localUsedCandidate, "port");
 
                 const localIp = `${localIpAddress}:${localPort}`;
-                const type = getStatValue(remoteUsedCandidate, 'protocol');
+                const type = getStatValue(remoteUsedCandidate, "protocol");
 
                 // Save the address unless it has been saved already.
                 const conferenceStatsTransport = this.conferenceStats.transport;
 
-                if (!conferenceStatsTransport.some(
-                        t =>
-                            t.ip === ip
-                            && t.type === type
-                            && t.localip === localIp)) {
+                if (
+                    !conferenceStatsTransport.some(
+                        (t) =>
+                            t.ip === ip &&
+                            t.type === type &&
+                            t.localip === localIp
+                    )
+                ) {
                     conferenceStatsTransport.push({
                         ip,
                         type,
@@ -1137,16 +1187,16 @@ StatsCollector.prototype.processNewStatsReport = function() {
                         localCandidateType: localUsedCandidate.candidateType,
                         remoteCandidateType: remoteUsedCandidate.candidateType,
                         networkType: localUsedCandidate.networkType,
-                        rtt: now.currentRoundTripTime * 1000
+                        rtt: now.currentRoundTripTime * 1000,
                     });
                 }
             }
 
-        // RTCReceivedRtpStreamStats
-        // https://w3c.github.io/webrtc-stats/#receivedrtpstats-dict*
-        // RTCSentRtpStreamStats
-        // https://w3c.github.io/webrtc-stats/#sentrtpstats-dict*
-        } else if (now.type === 'inbound-rtp' || now.type === 'outbound-rtp') {
+            // RTCReceivedRtpStreamStats
+            // https://w3c.github.io/webrtc-stats/#receivedrtpstats-dict*
+            // RTCSentRtpStreamStats
+            // https://w3c.github.io/webrtc-stats/#sentrtpstats-dict*
+        } else if (now.type === "inbound-rtp" || now.type === "outbound-rtp") {
             const before = this.previousStatsReport.get(now.id);
             const ssrc = this.getNonNegativeValue(now.ssrc);
 
@@ -1162,11 +1212,11 @@ StatsCollector.prototype.processNewStatsReport = function() {
             }
 
             let isDownloadStream = true;
-            let key = 'packetsReceived';
+            let key = "packetsReceived";
 
-            if (now.type === 'outbound-rtp') {
+            if (now.type === "outbound-rtp") {
                 isDownloadStream = false;
-                key = 'packetsSent';
+                key = "packetsSent";
             }
 
             let packetsNow = now[key];
@@ -1178,25 +1228,29 @@ StatsCollector.prototype.processNewStatsReport = function() {
             const packetsBefore = this.getNonNegativeValue(before[key]);
             const packetsDiff = Math.max(0, packetsNow - packetsBefore);
 
-            const packetsLostNow
-                = this.getNonNegativeValue(now.packetsLost);
-            const packetsLostBefore
-                = this.getNonNegativeValue(before.packetsLost);
-            const packetsLostDiff
-                = Math.max(0, packetsLostNow - packetsLostBefore);
+            const packetsLostNow = this.getNonNegativeValue(now.packetsLost);
+            const packetsLostBefore = this.getNonNegativeValue(
+                before.packetsLost
+            );
+            const packetsLostDiff = Math.max(
+                0,
+                packetsLostNow - packetsLostBefore
+            );
 
             ssrcStats.setLoss({
                 packetsTotal: packetsDiff + packetsLostDiff,
                 packetsLost: packetsLostDiff,
-                isDownloadStream
+                isDownloadStream,
             });
 
-            if (now.type === 'inbound-rtp') {
-
+            if (now.type === "inbound-rtp") {
                 ssrcStats.addBitrate({
-                    'download': this._calculateBitrate(
-                                    now, before, 'bytesReceived'),
-                    'upload': 0
+                    download: this._calculateBitrate(
+                        now,
+                        before,
+                        "bytesReceived"
+                    ),
+                    upload: 0,
                 });
 
                 // RTCInboundRtpStreamStats
@@ -1206,9 +1260,8 @@ StatsCollector.prototype.processNewStatsReport = function() {
             } else {
                 byteSentStats[ssrc] = this.getNonNegativeValue(now.bytesSent);
                 ssrcStats.addBitrate({
-                    'download': 0,
-                    'upload': this._calculateBitrate(
-                                now, before, 'bytesSent')
+                    download: 0,
+                    upload: this._calculateBitrate(now, before, "bytesSent"),
                 });
 
                 // RTCOutboundRtpStreamStats
@@ -1224,16 +1277,15 @@ StatsCollector.prototype.processNewStatsReport = function() {
                 ssrcStats.setFramerate(Math.round(framerateMean || 0));
             }
 
-        // track for resolution
-        // RTCVideoHandlerStats
-        // https://w3c.github.io/webrtc-stats/#vststats-dict*
-        // RTCMediaHandlerStats
-        // https://w3c.github.io/webrtc-stats/#mststats-dict*
-        } else if (now.type === 'track') {
-
+            // track for resolution
+            // RTCVideoHandlerStats
+            // https://w3c.github.io/webrtc-stats/#vststats-dict*
+            // RTCMediaHandlerStats
+            // https://w3c.github.io/webrtc-stats/#mststats-dict*
+        } else if (now.type === "track") {
             const resolution = {
                 height: now.frameHeight,
-                width: now.frameWidth
+                width: now.frameWidth,
             };
 
             // Tries to get frame rate
@@ -1247,8 +1299,8 @@ StatsCollector.prototype.processNewStatsReport = function() {
                     const timeMs = now.timestamp - before.timestamp;
 
                     if (timeMs > 0 && now.framesSent) {
-                        const numberOfFramesSinceBefore
-                            = now.framesSent - before.framesSent;
+                        const numberOfFramesSinceBefore =
+                            now.framesSent - before.framesSent;
 
                         frameRate = (numberOfFramesSinceBefore / timeMs) * 1000;
                     }
@@ -1282,7 +1334,10 @@ StatsCollector.prototype.processNewStatsReport = function() {
     });
 
     this.eventEmitter.emit(
-        StatisticsEvents.BYTE_SENT_STATS, this.peerconnection, byteSentStats);
+        StatisticsEvents.BYTE_SENT_STATS,
+        this.peerconnection,
+        byteSentStats
+    );
 
     this._processAndEmitReport();
 };
@@ -1290,13 +1345,13 @@ StatsCollector.prototype.processNewStatsReport = function() {
 /**
  * Stats processing logic.
  */
-StatsCollector.prototype.processNewAudioLevelReport = function() {
+StatsCollector.prototype.processNewAudioLevelReport = function () {
     if (!this.baselineAudioLevelsReport) {
         return;
     }
 
-    this.currentAudioLevelsReport.forEach(now => {
-        if (now.type !== 'track') {
+    this.currentAudioLevelsReport.forEach((now) => {
+        if (now.type !== "track") {
             return;
         }
 
@@ -1311,16 +1366,19 @@ StatsCollector.prototype.processNewAudioLevelReport = function() {
         const ssrc = this.peerconnection.getSsrcByTrackId(trackIdentifier);
 
         if (ssrc) {
-            const isLocal
-                = ssrc === this.peerconnection.getLocalSSRC(
-                this.peerconnection.getLocalTracks(MediaType.AUDIO));
+            const isLocal =
+                ssrc ===
+                this.peerconnection.getLocalSSRC(
+                    this.peerconnection.getLocalTracks(MediaType.AUDIO)
+                );
 
             this.eventEmitter.emit(
                 StatisticsEvents.AUDIO_LEVEL,
                 this.peerconnection,
                 ssrc,
                 audioLevel,
-                isLocal);
+                isLocal
+            );
         }
     });
 };

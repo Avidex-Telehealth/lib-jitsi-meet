@@ -1,5 +1,5 @@
-import { BrowserDetection } from '@jitsi/js-utils';
-import { getLogger } from 'jitsi-meet-logger';
+import { BrowserDetection } from "./BrowserDetection";
+import { getLogger } from "jitsi-meet-logger";
 
 const logger = getLogger(__filename);
 
@@ -19,7 +19,8 @@ export default class BrowserCapabilities extends BrowserDetection {
     constructor() {
         super();
         logger.info(
-            `This appears to be ${this.getName()}, ver: ${this.getVersion()}`);
+            `This appears to be ${this.getName()}, ver: ${this.getVersion()}`
+        );
     }
 
     /**
@@ -55,10 +56,12 @@ export default class BrowserCapabilities extends BrowserDetection {
      *   custom detection code: Opera, Electron and NW.JS
      */
     isChromiumBased() {
-        return this.isChrome()
-            || this.isElectron()
-            || this.isNWJS()
-            || this.isOpera();
+        return (
+            this.isChrome() ||
+            this.isElectron() ||
+            this.isNWJS() ||
+            this.isOpera()
+        );
     }
 
     /**
@@ -67,7 +70,10 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @returns {boolean} Whether the current context is a TWA.
      */
     isTwa() {
-        return 'matchMedia' in window && window.matchMedia('(display-mode:standalone)').matches;
+        return (
+            "matchMedia" in window &&
+            window.matchMedia("(display-mode:standalone)").matches
+        );
     }
 
     /**
@@ -76,10 +82,12 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @returns {boolean} true if the browser is supported, false otherwise.
      */
     isSupported() {
-        return this.isChromiumBased()
-            || this.isFirefox()
-            || this.isReactNative()
-            || (this.isSafari() && !this.isVersionLessThan('12.1'));
+        return (
+            this.isChromiumBased() ||
+            this.isFirefox() ||
+            this.isReactNative() ||
+            (this.isSafari() && !this.isVersionLessThan("12.1"))
+        );
     }
 
     /**
@@ -89,7 +97,7 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @returns {boolean}
      */
     isUserInteractionRequiredForUnmute() {
-        return this.isFirefox() && this.isVersionLessThan('68');
+        return this.isFirefox() && this.isVersionLessThan("68");
     }
 
     /**
@@ -99,7 +107,9 @@ export default class BrowserCapabilities extends BrowserDetection {
      * otherwise.
      */
     supportsVideoMuteOnConnInterrupted() {
-        return this.isChromiumBased() || this.isReactNative() || this.isSafari();
+        return (
+            this.isChromiumBased() || this.isReactNative() || this.isSafari()
+        );
     }
 
     /**
@@ -118,14 +128,18 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @returns {boolean}
      */
     supportsCodecPreferences() {
-        return this.usesUnifiedPlan()
-            && typeof window.RTCRtpTransceiver !== 'undefined'
-            && Object.keys(window.RTCRtpTransceiver.prototype).indexOf('setCodecPreferences') > -1
-            && Object.keys(RTCRtpSender.prototype).indexOf('getCapabilities') > -1
-
+        return (
+            this.usesUnifiedPlan() &&
+            typeof window.RTCRtpTransceiver !== "undefined" &&
+            Object.keys(window.RTCRtpTransceiver.prototype).indexOf(
+                "setCodecPreferences"
+            ) > -1 &&
+            Object.keys(RTCRtpSender.prototype).indexOf("getCapabilities") >
+                -1 &&
             // this is not working on Safari because of the following bug
             // https://bugs.webkit.org/show_bug.cgi?id=215567
-            && !this.isSafari();
+            !this.isSafari()
+        );
     }
 
     /**
@@ -133,9 +147,11 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @return {boolean}
      */
     supportsDeviceChangeEvent() {
-        return navigator.mediaDevices
-            && typeof navigator.mediaDevices.ondevicechange !== 'undefined'
-            && typeof navigator.mediaDevices.addEventListener !== 'undefined';
+        return (
+            navigator.mediaDevices &&
+            typeof navigator.mediaDevices.ondevicechange !== "undefined" &&
+            typeof navigator.mediaDevices.addEventListener !== "undefined"
+        );
     }
 
     /**
@@ -143,7 +159,9 @@ export default class BrowserCapabilities extends BrowserDetection {
      * candidates through the legacy getStats() API.
      */
     supportsLocalCandidateRttStatistics() {
-        return this.isChromiumBased() || this.isReactNative() || this.isSafari();
+        return (
+            this.isChromiumBased() || this.isReactNative() || this.isSafari()
+        );
     }
 
     /**
@@ -152,16 +170,22 @@ export default class BrowserCapabilities extends BrowserDetection {
      * 50ms to execute on the main thread.
      */
     supportsPerformanceObserver() {
-        return typeof window.PerformanceObserver !== 'undefined'
-            && PerformanceObserver.supportedEntryTypes.indexOf('longtask') > -1;
+        return (
+            typeof window.PerformanceObserver !== "undefined" &&
+            PerformanceObserver.supportedEntryTypes.indexOf("longtask") > -1
+        );
     }
 
     /**
      * Checks if the current browser supports audio level stats on the receivers.
      */
     supportsReceiverStats() {
-        return typeof window.RTCRtpReceiver !== 'undefined'
-            && Object.keys(RTCRtpReceiver.prototype).indexOf('getSynchronizationSources') > -1;
+        return (
+            typeof window.RTCRtpReceiver !== "undefined" &&
+            Object.keys(RTCRtpReceiver.prototype).indexOf(
+                "getSynchronizationSources"
+            ) > -1
+        );
     }
 
     /**
@@ -206,7 +230,9 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @returns {boolean}
      */
     usesSdpMungingForSimulcast() {
-        return this.isChromiumBased() || this.isReactNative() || this.isSafari();
+        return (
+            this.isChromiumBased() || this.isReactNative() || this.isSafari()
+        );
     }
 
     /**
@@ -219,12 +245,18 @@ export default class BrowserCapabilities extends BrowserDetection {
             return true;
         }
 
-        if (this.isSafari() && typeof window.RTCRtpTransceiver !== 'undefined') {
+        if (
+            this.isSafari() &&
+            typeof window.RTCRtpTransceiver !== "undefined"
+        ) {
             // eslint-disable-next-line max-len
             // https://trac.webkit.org/changeset/236144/webkit/trunk/LayoutTests/webrtc/video-addLegacyTransceiver.html
             // eslint-disable-next-line no-undef
-            return Object.keys(RTCRtpTransceiver.prototype)
-                   .indexOf('currentDirection') > -1;
+            return (
+                Object.keys(RTCRtpTransceiver.prototype).indexOf(
+                    "currentDirection"
+                ) > -1
+            );
         }
 
         return false;
@@ -279,10 +311,11 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @returns {boolean} {@code true} if the browser supports getDisplayMedia.
      */
     supportsGetDisplayMedia() {
-        return typeof navigator.getDisplayMedia !== 'undefined'
-            || (typeof navigator.mediaDevices !== 'undefined'
-                && typeof navigator.mediaDevices.getDisplayMedia
-                    !== 'undefined');
+        return (
+            typeof navigator.getDisplayMedia !== "undefined" ||
+            (typeof navigator.mediaDevices !== "undefined" &&
+                typeof navigator.mediaDevices.getDisplayMedia !== "undefined")
+        );
     }
 
     /**
@@ -290,9 +323,13 @@ export default class BrowserCapabilities extends BrowserDetection {
      * @returns {boolean} {@code true} if the browser supports insertable streams.
      */
     supportsInsertableStreams() {
-        if (!(typeof window.RTCRtpSender !== 'undefined'
-            && (window.RTCRtpSender.prototype.createEncodedStreams
-                || window.RTCRtpSender.prototype.createEncodedVideoStreams))) {
+        if (
+            !(
+                typeof window.RTCRtpSender !== "undefined" &&
+                (window.RTCRtpSender.prototype.createEncodedStreams ||
+                    window.RTCRtpSender.prototype.createEncodedVideoStreams)
+            )
+        ) {
             return false;
         }
 
@@ -301,7 +338,7 @@ export default class BrowserCapabilities extends BrowserDetection {
         const stream = new ReadableStream();
 
         try {
-            window.postMessage(stream, '*', [ stream ]);
+            window.postMessage(stream, "*", [stream]);
 
             return true;
         } catch {
@@ -313,12 +350,18 @@ export default class BrowserCapabilities extends BrowserDetection {
      * Whether the browser supports the RED format for audio.
      */
     supportsAudioRed() {
-        return Boolean(window.RTCRtpSender
-            && window.RTCRtpSender.getCapabilities
-            && window.RTCRtpSender.getCapabilities('audio').codecs.some(codec => codec.mimeType === 'audio/red')
-            && window.RTCRtpReceiver
-            && window.RTCRtpReceiver.getCapabilities
-            && window.RTCRtpReceiver.getCapabilities('audio').codecs.some(codec => codec.mimeType === 'audio/red'));
+        return Boolean(
+            window.RTCRtpSender &&
+                window.RTCRtpSender.getCapabilities &&
+                window.RTCRtpSender.getCapabilities("audio").codecs.some(
+                    (codec) => codec.mimeType === "audio/red"
+                ) &&
+                window.RTCRtpReceiver &&
+                window.RTCRtpReceiver.getCapabilities &&
+                window.RTCRtpReceiver.getCapabilities("audio").codecs.some(
+                    (codec) => codec.mimeType === "audio/red"
+                )
+        );
     }
 
     /**
@@ -352,8 +395,10 @@ export default class BrowserCapabilities extends BrowserDetection {
             const ua = navigator.userAgent;
 
             if (ua.match(/Chrome/)) {
-                const version
-                    = Number.parseInt(ua.match(/Chrome\/([\d.]+)/)[1], 10);
+                const version = Number.parseInt(
+                    ua.match(/Chrome\/([\d.]+)/)[1],
+                    10
+                );
 
                 return version;
             }
