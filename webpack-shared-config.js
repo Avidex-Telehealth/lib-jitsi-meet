@@ -50,6 +50,7 @@ module.exports = {
                                     safari: 11,
                                 },
                                 forceAllTransforms: true,
+                                useBuiltIns: "entry",
                             },
                         ],
                         "@babel/preset-flow",
@@ -81,8 +82,8 @@ module.exports = {
     },
     performance: {
         hints: minimize ? "error" : false,
-        maxAssetSize: 800 * 1024,
-        maxEntrypointSize: 800 * 1024,
+        maxAssetSize: 850 * 1024,
+        maxEntrypointSize: 850 * 1024,
     },
     plugins: [
         analyzeBundle &&

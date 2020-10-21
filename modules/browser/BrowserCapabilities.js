@@ -1,4 +1,4 @@
-import { BrowserDetection } from "./BrowserDetection";
+import { BrowserDetection } from "../browser-detection";
 import { getLogger } from "jitsi-meet-logger";
 
 const logger = getLogger(__filename);
@@ -17,7 +17,7 @@ export default class BrowserCapabilities extends BrowserDetection {
      * Creates new BrowserCapabilities instance.
      */
     constructor() {
-        super();
+        super(undefined);
         logger.info(
             `This appears to be ${this.getName()}, ver: ${this.getVersion()}`
         );

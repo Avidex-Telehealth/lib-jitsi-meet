@@ -1,4 +1,4 @@
-import { browsers } from "../browser/";
+import { browsers } from "../browser-detection";
 import { getLogger } from "jitsi-meet-logger";
 
 import * as MediaType from "../../service/RTC/MediaType";
